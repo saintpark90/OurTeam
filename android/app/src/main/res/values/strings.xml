@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">OurTeam</string>
+    <string name="title_activity_main">OurTeam</string>
+    <string name="package_name">app.ourteam.mobile</string>
+    <string name="custom_url_scheme">app.ourteam.mobile</string>
+</resources>
