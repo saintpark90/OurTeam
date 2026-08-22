@@ -24,8 +24,6 @@ Supabase 키가 없어도 **로컬 체험 모드**로 UI를 확인할 수 있습
 
 `main`에 푸시하면 Actions가 빌드 후 Pages에 배포합니다.
 
-최초 1회 저장소 **Settings → Pages → Source**를 **GitHub Actions**로 선택하세요.
-
 Kakao 로그인을 쓰려면 Actions secrets에 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`를 넣고, Supabase Redirect URL에 `https://saintpark90.github.io/OurTeam/**` 를 추가하세요. 키가 없어도 로컬 체험 모드로 확인할 수 있습니다.
 
 ## Supabase
