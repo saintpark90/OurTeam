@@ -1,7 +1,6 @@
 # OurTeam
 
-응원 구단 경기 정보와 직관 모임(그룹)을 한 서비스로 묶은 웹 + 안드로이드 앱입니다.  
-구단 공식 엠블럼·선수 사진·실시간 타사 중계 크롤링은 사용하지 않습니다.
+응원 구단 경기 정보와 직관 승률을 확인 할 수 있는 웹 + 안드로이드 앱입니다.  
 
 ## 스택
 
@@ -19,6 +18,16 @@ npm run dev
 
 Supabase 키가 없어도 **로컬 체험 모드**로 UI를 확인할 수 있습니다.
 
+## GitHub Pages
+
+주소: https://saintpark90.github.io/OurTeam/
+
+`main`에 푸시하면 Actions가 빌드 후 Pages에 배포합니다.
+
+최초 1회 저장소 **Settings → Pages → Source**를 **GitHub Actions**로 선택하세요.
+
+Kakao 로그인을 쓰려면 Actions secrets에 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`를 넣고, Supabase Redirect URL에 `https://saintpark90.github.io/OurTeam/**` 를 추가하세요. 키가 없어도 로컬 체험 모드로 확인할 수 있습니다.
+
 ## Supabase
 
 1. 새 프로젝트 생성
@@ -26,6 +35,7 @@ Supabase 키가 없어도 **로컬 체험 모드**로 UI를 확인할 수 있습
 3. Authentication > Kakao 활성화
 4. Redirect URLs:
    - `http://localhost:5173/**`
+   - GitHub Pages `https://saintpark90.github.io/OurTeam/**`
    - 배포 도메인 `https://<your-domain>/**`
    - 앱: `app.ourteam.mobile://auth/callback`
 
@@ -51,10 +61,3 @@ npx cap open android
 ```
 
 Kakao Developers에 앱 키와 `app.ourteam.mobile://auth/callback` 를 등록하세요.
-
-## 저작권 원칙
-
-- 구단: 컬러 + 약칭 뱃지만 사용
-- 선수: 이름·등번호·포지션·성적 텍스트만
-- 데이터: 자체 DB 2차 지표(직관 승률, 내가 본 경기 타율 등)
-- 명칭: KBO 공식 서비스가 아님
