@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapApp } from '@capacitor/app'
@@ -6,6 +6,7 @@ import { Browser } from '@capacitor/browser'
 import ThemeToggle from './components/ThemeToggle'
 import BottomNav from './components/BottomNav'
 import TeamBadge from './components/TeamBadge'
+import Avatar from './components/Avatar'
 import { TEAMS, applyTeamAccent } from './lib/teams'
 import {
   supabase,
@@ -23,31 +24,39 @@ import GroupsPage from './pages/GroupsPage'
 import ProfilePage from './pages/ProfilePage'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
 
+const PAGE_TITLES = {
+  '/fan': '직관',
+  '/groups': '그룹',
+  '/me': '내 정보',
+  '/privacy': '개인정보',
+}
+
 function LoginScreen({ onLocal, onKakao, authError }) {
   return (
-    <div className="app-shell">
-      <div className="content">
-        <div className="card login-card">
-          <div className="row space">
-            <h1 className="logo">OurTeam</h1>
-            <ThemeToggle />
-          </div>
-          <p className="muted">응원 구단 기록과 직관 모임을 한곳에서.</p>
-          {supabaseConfigError ? <p className="muted">{supabaseConfigError}</p> : null}
-          {authError ? <p className="error">{authError}</p> : null}
+    <div className="login-screen">
+      <div className="login-hero">
+        <div className="row space">
+          <h1>OurTeam</h1>
+          <ThemeToggle />
+        </div>
+        <p>응원 구단 기록과 직관 모임을 한곳에서.</p>
+      </div>
+      <div className="login-body">
+        {supabaseConfigError ? <p className="muted">{supabaseConfigError}</p> : null}
+        {authError ? <p className="error">{authError}</p> : null}
+        <div className="stack">
           {supabase ? (
             <button type="button" className="btn kakao" onClick={onKakao}>
               카카오로 계속하기
             </button>
           ) : null}
-          <div style={{ height: 10 }} />
-          <button type="button" className="btn ghost" onClick={onLocal} style={{ width: '100%' }}>
+          <button type="button" className="btn ghost" onClick={onLocal}>
             로컬 체험 모드
           </button>
-          <p className="muted" style={{ marginTop: 16 }}>
-            구단 공식 로고·선수 사진은 사용하지 않습니다.
-          </p>
         </div>
+        <p className="muted" style={{ marginTop: 20 }}>
+          구단 공식 로고·선수 사진은 사용하지 않습니다.
+        </p>
       </div>
     </div>
   )
@@ -57,38 +66,38 @@ function Onboarding({ user, onDone }) {
   const [picked, setPicked] = useState(null)
   const display = getUserDisplayFields(user)
   return (
-    <div className="app-shell">
-      <div className="content">
-        <div className="card onboard-card">
-          <h1>응원 구단 선택</h1>
-          <p className="muted">처음 한 번만 고르면, 그 구단 일정과 직관 승률을 보여 줍니다. 나중에 바꿀 수 있습니다.</p>
-          <div className="grid-teams">
-            {TEAMS.map((team) => (
-              <button
-                key={team.code}
-                type="button"
-                className={`team-pick ${picked === team.code ? 'selected' : ''}`}
-                onClick={() => setPicked(team.code)}
-              >
-                <TeamBadge team={team} />
-                <span>{team.nameKo}</span>
-              </button>
-            ))}
-          </div>
-          <div style={{ height: 16 }} />
-          <button
-            type="button"
-            className="btn"
-            disabled={!picked}
-            onClick={async () => {
-              await saveFavoriteTeam(user.id, picked, display.displayName, user.email, display.avatarUrl)
-              onDone(picked)
-            }}
-            style={{ width: '100%' }}
-          >
-            시작하기
-          </button>
+    <div className="onboard-screen">
+      <div className="onboard-hero">
+        <h1>응원 구단을 고르세요</h1>
+        <p>처음 한 번만 고르면, 그 구단 일정과 직관 승률을 보여 줍니다. 나중에 바꿀 수 있습니다.</p>
+      </div>
+      <div className="onboard-body">
+        <div className="grid-teams">
+          {TEAMS.map((team) => (
+            <button
+              key={team.code}
+              type="button"
+              className={`team-pick ${picked === team.code ? 'selected' : ''}`}
+              onClick={() => setPicked(team.code)}
+            >
+              <TeamBadge team={team} />
+              <span>{team.nameKo}</span>
+            </button>
+          ))}
         </div>
+        <div style={{ height: 20 }} />
+        <button
+          type="button"
+          className="btn"
+          disabled={!picked}
+          onClick={async () => {
+            await saveFavoriteTeam(user.id, picked, display.displayName, user.email, display.avatarUrl)
+            onDone(picked)
+          }}
+          style={{ width: '100%' }}
+        >
+          시작하기
+        </button>
       </div>
     </div>
   )
@@ -96,21 +105,31 @@ function Onboarding({ user, onDone }) {
 
 function Shell({ user, favoriteTeam, onSignOut, onTeamChange }) {
   const team = TEAMS.find((t) => t.code === favoriteTeam)
+  const display = getUserDisplayFields(user)
+  const location = useLocation()
+  const pageTitle = PAGE_TITLES[location.pathname]
+
   return (
     <div className="app-shell">
       <header className="app-top">
-        <div className="row" style={{ gap: 10 }}>
-          <TeamBadge team={team} />
-          <div>
-            <h1 className="logo">OurTeam</h1>
-            <div className="muted">{team?.nameKo} 팬</div>
-          </div>
+        <div className="greeting">
+          {pageTitle ? (
+            <h1 className="greeting-title">{pageTitle}</h1>
+          ) : (
+            <>
+              <p className="greeting-kicker">Hello</p>
+              <h1 className="greeting-title">{display.displayName}</h1>
+            </>
+          )}
         </div>
-        <ThemeToggle />
+        <div className="app-top-actions">
+          <ThemeToggle />
+          <Avatar name={display.displayName} url={display.avatarUrl} />
+        </div>
       </header>
       <main className="content">
         <Routes>
-          <Route path="/" element={<GamesPage favoriteTeam={favoriteTeam} />} />
+          <Route path="/" element={<GamesPage favoriteTeam={favoriteTeam} team={team} />} />
           <Route path="/fan" element={<FanPage userId={user.id} favoriteTeam={favoriteTeam} />} />
           <Route path="/groups" element={<GroupsPage userId={user.id} favoriteTeam={favoriteTeam} />} />
           <Route
@@ -224,7 +243,7 @@ export default function App() {
     setSession(local)
   }
 
-  if (!ready) return <div className="content muted">불러오는 중…</div>
+  if (!ready) return <div className="splash">불러오는 중…</div>
   if (!user) {
     return <LoginScreen onLocal={onLocal} onKakao={onKakao} authError={authError} />
   }

@@ -51,7 +51,7 @@ export default function GroupsPage({ userId }) {
       {error ? <p className="error">{error}</p> : null}
       <section className="card">
         <h2>그룹 만들기</h2>
-        <div className="row">
+        <div className="stack">
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="모임 이름" />
           <button
             type="button"
@@ -76,7 +76,7 @@ export default function GroupsPage({ userId }) {
 
       <section className="card">
         <h2>초대코드로 참여</h2>
-        <div className="row">
+        <div className="stack">
           <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="예: A1B2C3" />
           <button
             type="button"
@@ -118,7 +118,7 @@ export default function GroupsPage({ userId }) {
             <p>
               초대코드 <strong>{current.invite_code}</strong>
             </p>
-            <button type="button" className="btn ghost" onClick={() => leaveGroup(userId, current.id).then(reload)}>
+            <button type="button" className="btn ghost" onClick={() => leaveGroup(userId, current.id).then(reload)} style={{ width: '100%' }}>
               이 그룹 나가기
             </button>
           </>
@@ -130,9 +130,9 @@ export default function GroupsPage({ userId }) {
       <section className="card">
         <h2>멤버</h2>
         {members.map((m) => (
-          <div key={m.user_id} className="lineup-item">
-            <span>{m.display_name}</span>
-            <span className="muted">{m.role}</span>
+          <div key={m.user_id} className="list-row">
+            <span className="list-row-title">{m.display_name}</span>
+            <span className="list-row-trail">{m.role}</span>
           </div>
         ))}
       </section>
@@ -140,21 +140,15 @@ export default function GroupsPage({ userId }) {
       <section className="card">
         <h2>그룹 직관 순위</h2>
         <p className="muted">같은 그룹 멤버만 보입니다. 승률은 각자 응원 구단 기준입니다.</p>
-        <table className="table">
-          <thead>
-            <tr><th>이름</th><th>경기</th><th>승무패</th><th>승률</th></tr>
-          </thead>
-          <tbody>
-            {board.map((row) => (
-              <tr key={row.user_id}>
-                <td>{row.display_name}</td>
-                <td>{row.games}</td>
-                <td>{row.wins}·{row.draws}·{row.losses}</td>
-                <td>{row.win_rate}%</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {board.map((row) => (
+          <div key={row.user_id} className="list-row">
+            <div className="list-row-text">
+              <div className="list-row-title">{row.display_name}</div>
+              <div className="list-row-meta">{row.games}경기 · {row.wins}승 {row.draws}무 {row.losses}패</div>
+            </div>
+            <span className="list-row-title">{row.win_rate}%</span>
+          </div>
+        ))}
       </section>
     </div>
   )

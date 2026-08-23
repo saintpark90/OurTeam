@@ -22,7 +22,17 @@ function ResultPill({ game, teamCode }) {
   return <span className="pill loss">패</span>
 }
 
-export default function GamesPage({ favoriteTeam }) {
+function formatKoDate(iso) {
+  if (!iso) return ''
+  const [, m, d] = iso.split('-')
+  return `${Number(m)}월 ${Number(d)}일`
+}
+
+function scrollToId(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+export default function GamesPage({ favoriteTeam, team }) {
   const [games, setGames] = useState([])
   const [stats, setStats] = useState([])
   const [moves, setMoves] = useState([])
@@ -110,37 +120,74 @@ export default function GamesPage({ favoriteTeam }) {
   return (
     <div>
       {error ? <p className="error">{error}</p> : null}
-      <p className="muted">성적은 전날 새벽 배치로 적재된 자체 DB 기준입니다. 실시간 중계는 없습니다.</p>
 
-      <section className="card">
-        <h2>다음 경기</h2>
+      <section className="hero-card">
+        <p className="hero-kicker">{team?.nameKo || '우리 팀'} · 다음 경기</p>
         {nextGame ? (
           <>
-            <div className="row space">
-              <div className="row">
+            <h2 className="hero-title">{formatKoDate(nextGame.game_date)}</h2>
+            <p className="hero-sub">
+              {nextGame.game_time || ''} · {nextGame.stadium || '구장 미정'}
+            </p>
+            <div className="matchup">
+              <div className="matchup-side">
                 <TeamBadge team={getTeam(nextGame.away_team_code)} size="lg" />
-                <div>
-                  <div>{getTeam(nextGame.away_team_code)?.nameKo}</div>
-                  <div className="muted">원정</div>
-                </div>
+                <span>{getTeam(nextGame.away_team_code)?.nameKo}</span>
               </div>
-              <div className="muted">vs</div>
-              <div className="row">
-                <div style={{ textAlign: 'right' }}>
-                  <div>{getTeam(nextGame.home_team_code)?.nameKo}</div>
-                  <div className="muted">홈</div>
-                </div>
+              <div className="matchup-vs">VS</div>
+              <div className="matchup-side">
                 <TeamBadge team={getTeam(nextGame.home_team_code)} size="lg" />
+                <span>{getTeam(nextGame.home_team_code)?.nameKo}</span>
               </div>
             </div>
-            <p>
-              {nextGame.game_date} {nextGame.game_time || ''} · {nextGame.stadium || '구장 미정'}
-            </p>
           </>
         ) : (
-          <p className="muted">예정된 경기가 없습니다.</p>
+          <>
+            <h2 className="hero-title">일정 없음</h2>
+            <p className="hero-sub">예정된 경기가 없습니다.</p>
+          </>
         )}
       </section>
+
+      <nav className="quick-actions" aria-label="바로가기">
+        <button type="button" className="quick-action" onClick={() => scrollToId('today')}>
+          <span className="quick-action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+              <rect x="4" y="5" width="16" height="15" rx="3" />
+              <path d="M8 3v4M16 3v4M4 10h16" />
+            </svg>
+          </span>
+          오늘
+        </button>
+        <button type="button" className="quick-action" onClick={() => scrollToId('standings')}>
+          <span className="quick-action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+              <path d="M5 19V9M12 19V5M19 19v-7" />
+            </svg>
+          </span>
+          순위
+        </button>
+        <button type="button" className="quick-action" onClick={() => scrollToId('calendar')}>
+          <span className="quick-action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+              <rect x="4" y="6" width="16" height="14" rx="2" />
+              <path d="M8 4v4M16 4v4M9 14h6" />
+            </svg>
+          </span>
+          달력
+        </button>
+        <button type="button" className="quick-action" onClick={() => scrollToId('video')}>
+          <span className="quick-action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+              <rect x="3" y="6" width="18" height="12" rx="2" />
+              <path d="M10 9.5v5l5-2.5-5-2.5Z" />
+            </svg>
+          </span>
+          영상
+        </button>
+      </nav>
+
+      <p className="caption">성적은 전날 새벽 배치로 적재된 자체 DB 기준입니다. 실시간 중계는 없습니다.</p>
 
       <section className="card">
         <h2>선발 투수 (DB 합산)</h2>
@@ -209,17 +256,21 @@ export default function GamesPage({ favoriteTeam }) {
         </table>
       </section>
 
-      <section className="card">
+      <section className="card" id="today">
         <h2>오늘 리그 일정</h2>
         {leagueToday.length === 0 ? <p className="muted">오늘 저장된 경기가 없습니다.</p> : null}
         {leagueToday.map((g) => (
-          <div key={g.id} className="lineup-item">
-            <span className="row">
+          <div key={g.id} className="list-row">
+            <div className="list-row-main">
               <TeamBadge team={getTeam(g.away_team_code)} />
-              <span>vs</span>
-              <TeamBadge team={getTeam(g.home_team_code)} />
-            </span>
-            <span className="muted">{g.game_time} {g.stadium}</span>
+              <div className="list-row-text">
+                <div className="list-row-title">
+                  {getTeam(g.away_team_code)?.nameKo} vs {getTeam(g.home_team_code)?.nameKo}
+                </div>
+                <div className="list-row-meta">{g.stadium || '구장 미정'}</div>
+              </div>
+            </div>
+            <span className="list-row-trail">{g.game_time || ''}</span>
           </div>
         ))}
       </section>
@@ -227,9 +278,16 @@ export default function GamesPage({ favoriteTeam }) {
       <section className="card">
         <h2>최근 종료 경기</h2>
         {leagueYday.slice(-8).reverse().map((g) => (
-          <div key={g.id} className="lineup-item">
-            <span>{getTeam(g.away_team_code)?.nameKo} {g.away_score} - {g.home_score} {getTeam(g.home_team_code)?.nameKo}</span>
-            <span className="muted">{g.game_date}</span>
+          <div key={g.id} className="list-row">
+            <div className="list-row-main">
+              <TeamBadge team={getTeam(g.home_team_code)} />
+              <div className="list-row-text">
+                <div className="list-row-title">
+                  {getTeam(g.away_team_code)?.nameKo} {g.away_score} - {g.home_score} {getTeam(g.home_team_code)?.nameKo}
+                </div>
+                <div className="list-row-meta">{formatKoDate(g.game_date)}</div>
+              </div>
+            </div>
           </div>
         ))}
       </section>
@@ -238,9 +296,9 @@ export default function GamesPage({ favoriteTeam }) {
         <h2>직전 경기 라인업 (텍스트)</h2>
         {lastGame ? <p className="muted">{lastGame.game_date} 박스스코어</p> : <p className="muted">종료 경기가 없습니다.</p>}
         {lastLineup.map((row) => (
-          <div key={row.id} className="lineup-item">
-            <span>{row.player_name}</span>
-            <span className="muted">
+          <div key={row.id} className="list-row">
+            <span className="list-row-title">{row.player_name}</span>
+            <span className="list-row-trail">
               {row.role === 'pitcher'
                 ? `투 ${row.innings_pitched_outs ? (row.innings_pitched_outs / 3).toFixed(1) : '-'}이닝 ER ${row.earned_runs ?? '-'}`
                 : `타 ${row.hits ?? 0}/${row.at_bats ?? 0} 타점 ${row.rbi ?? 0}`}
@@ -253,16 +311,16 @@ export default function GamesPage({ favoriteTeam }) {
         <h2>등/말소 {latestMoveDate || ''}</h2>
         <p className="muted">등록</p>
         {registered.map((m) => (
-          <div key={m.id} className="lineup-item">
-            <span>{m.back_number ?? '-'} {m.player_name}</span>
-            <span className="muted">{m.position || ''}</span>
+          <div key={m.id} className="list-row">
+            <span className="list-row-title">{m.back_number ?? '-'} {m.player_name}</span>
+            <span className="list-row-trail">{m.position || ''}</span>
           </div>
         ))}
         <p className="muted">말소</p>
         {dropped.map((m) => (
-          <div key={m.id} className="lineup-item">
-            <span>{m.back_number ?? '-'} {m.player_name}</span>
-            <span className="muted">{m.position || ''}</span>
+          <div key={m.id} className="list-row">
+            <span className="list-row-title">{m.back_number ?? '-'} {m.player_name}</span>
+            <span className="list-row-trail">{m.position || ''}</span>
           </div>
         ))}
         {!registered.length && !dropped.length ? <p className="muted">최근 등말소가 없습니다.</p> : null}
@@ -283,11 +341,11 @@ export default function GamesPage({ favoriteTeam }) {
         )}
       </section>
 
-      <section className="card">
+      <section className="card" id="calendar">
         <h2>{month} 일정</h2>
         <div className="calendar">
           {['일', '월', '화', '수', '목', '금', '토'].map((d) => (
-            <div key={d} className="muted" style={{ textAlign: 'center' }}>{d}</div>
+            <div key={d} className="cal-dow">{d}</div>
           ))}
           {cells.map((iso, i) => {
             if (!iso) return <div key={`e${i}`} className="cal-cell empty" />
@@ -306,32 +364,27 @@ export default function GamesPage({ favoriteTeam }) {
         </div>
       </section>
 
-      <section className="card">
+      <section className="card" id="standings">
         <h2>순위</h2>
-        <table className="table">
-          <thead>
-            <tr><th>순위</th><th>구단</th><th>승</th><th>패</th><th>무</th><th>승률</th></tr>
-          </thead>
-          <tbody>
-            {standings.map((row) => (
-              <tr key={row.code} style={{ fontWeight: row.code === favoriteTeam ? 800 : 400 }}>
-                <td>{row.rank}</td>
-                <td className="row"><TeamBadge team={getTeam(row.code)} /><span>{getTeam(row.code)?.nameKo}</span></td>
-                <td>{row.wins}</td>
-                <td>{row.losses}</td>
-                <td>{row.draws}</td>
-                <td>{row.winRate}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {standings.map((row) => (
+          <div key={row.code} className="list-row" style={{ fontWeight: row.code === favoriteTeam ? 800 : 400 }}>
+            <div className="list-row-main">
+              <TeamBadge team={getTeam(row.code)} />
+              <div className="list-row-text">
+                <div className="list-row-title">{row.rank} · {getTeam(row.code)?.nameKo}</div>
+                <div className="list-row-meta">{row.wins}승 {row.losses}패 {row.draws}무</div>
+              </div>
+            </div>
+            <span className="list-row-trail">{row.winRate}</span>
+          </div>
+        ))}
       </section>
 
-      <section className="card">
+      <section className="card" id="video">
         <h2>구단 영상</h2>
         <p className="muted">공식 채널로 이동합니다. 하이라이트를 재게시하지 않습니다.</p>
         {channel ? (
-          <a href={channel} target="_blank" rel="noreferrer">
+          <a className="btn" href={channel} target="_blank" rel="noreferrer" style={{ width: '100%', marginTop: 12 }}>
             YouTube 채널 열기
           </a>
         ) : null}

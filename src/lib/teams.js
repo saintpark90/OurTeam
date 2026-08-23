@@ -59,7 +59,7 @@ export function resolveStadiumCoords(stadium) {
 
 export function applyTeamAccent(teamCode) {
   const team = TEAM_BY_CODE[teamCode]
-  const color = team?.color || '#0ea5e9'
+  const color = team?.color || '#0070e0'
   document.documentElement.style.setProperty('--accent', color)
   return color
 }

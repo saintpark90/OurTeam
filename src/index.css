@@ -1,39 +1,59 @@
 :root {
-  --bg: #0b1220;
-  --bg-elev: #121a2b;
-  --card: #172033;
-  --text: #e8eef8;
-  --muted: #94a3b8;
-  --line: #243049;
-  --accent: #0ea5e9;
-  --win: #34d399;
-  --loss: #fb7185;
-  --draw: #fbbf24;
-  --radius: 18px;
-  --font: "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
-}
-
-:root[data-theme='light'] {
-  --bg: #f3f6fb;
+  --bg: #f5f5f5;
   --bg-elev: #ffffff;
   --card: #ffffff;
-  --text: #0f172a;
-  --muted: #64748b;
-  --line: #e2e8f0;
-  --win: #059669;
-  --loss: #e11d48;
-  --draw: #d97706;
+  --text: #000000;
+  --muted: #6b6b6b;
+  --line: #e6e7e8;
+  --ink: #000000;
+  --ink-fg: #ffffff;
+  --sky: #60cdff;
+  --midnight: #002991;
+  --link: #0070e0;
+  --accent: #0070e0;
+  --win: #007a56;
+  --loss: #c0212b;
+  --draw: #9a6700;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+  --font-display: "Outfit", "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", sans-serif;
+  --font-ui: "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+}
+
+:root[data-theme='dark'] {
+  --bg: #00143d;
+  --bg-elev: #00206a;
+  --card: #002991;
+  --text: #ffffff;
+  --muted: #b7c6ea;
+  --line: rgba(255, 255, 255, 0.14);
+  --ink: #ffffff;
+  --ink-fg: #000000;
+  --sky: #60cdff;
+  --midnight: #001c5c;
+  --link: #7ad4ff;
+  --win: #3dd6a3;
+  --loss: #ff7b86;
+  --draw: #f5c84c;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
 }
 
 * { box-sizing: border-box; }
+
 html, body, #root { min-height: 100%; }
+
 body {
   margin: 0;
-  font-family: var(--font);
+  font-family: var(--font-ui);
   background: var(--bg);
   color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
-button, input { font: inherit; }
+button, input, select { font: inherit; }
 
-a { color: var(--accent); }
+button { -webkit-tap-highlight-color: transparent; }
+
+a { color: var(--link); }

@@ -104,11 +104,11 @@ export default function FanPage({ userId, favoriteTeam }) {
 
   return (
     <div>
-      <section className="card stat-hero">
-        <div className="muted">나의 직관 승률</div>
-        <div className="big">{summary.winRate}%</div>
-        <div>{summary.wins}승 {summary.losses}패 {summary.draws}무 · {summary.total}경기</div>
-        <p className="muted">{flavor}</p>
+      <section className="hero-card">
+        <p className="hero-kicker">나의 직관 승률</p>
+        <h2 className="hero-title">{summary.winRate}%</h2>
+        <p className="hero-sub">{summary.wins}승 {summary.losses}패 {summary.draws}무 · {summary.total}경기</p>
+        <p className="muted" style={{ marginTop: 10 }}>{flavor}</p>
       </section>
 
       <section className="card">
@@ -132,13 +132,13 @@ export default function FanPage({ userId, favoriteTeam }) {
         <div className="row space">
           <h2 style={{ margin: 0 }}>{month} 직관 달력</h2>
           <div className="row">
-            <button type="button" className="btn ghost" onClick={() => shiftMonth(-1)}>이전</button>
-            <button type="button" className="btn ghost" onClick={() => shiftMonth(1)}>다음</button>
+            <button type="button" className="btn ghost compact" onClick={() => shiftMonth(-1)}>이전</button>
+            <button type="button" className="btn ghost compact" onClick={() => shiftMonth(1)}>다음</button>
           </div>
         </div>
         <div className="calendar" style={{ marginTop: 12 }}>
           {['일', '월', '화', '수', '목', '금', '토'].map((d) => (
-            <div key={d} className="muted" style={{ textAlign: 'center' }}>{d}</div>
+            <div key={d} className="cal-dow">{d}</div>
           ))}
           {cells.map((iso, i) => {
             if (!iso) return <div key={`e${i}`} className="cal-cell empty" />
@@ -195,9 +195,9 @@ export default function FanPage({ userId, favoriteTeam }) {
       <section className="card">
         <h2>내가 본 경기 타자 TOP5</h2>
         {batters.map((b) => (
-          <div key={b.playerName} className="lineup-item">
-            <span>{b.playerName}</span>
-            <span className="muted">{b.avg.toFixed(3)} · {b.hits}안타 {b.homeRuns}홈런 {b.games}G</span>
+          <div key={b.playerName} className="list-row">
+            <span className="list-row-title">{b.playerName}</span>
+            <span className="list-row-trail">{b.avg.toFixed(3)} · {b.hits}안타 {b.homeRuns}홈런 {b.games}G</span>
           </div>
         ))}
         {!batters.length ? <p className="muted">직관 경기 박스스코어가 쌓이면 표시됩니다.</p> : null}
@@ -206,9 +206,9 @@ export default function FanPage({ userId, favoriteTeam }) {
       <section className="card">
         <h2>내가 본 경기 투수 TOP5 (ERA)</h2>
         {pitchers.map((p) => (
-          <div key={p.playerName} className="lineup-item">
-            <span>{p.playerName}</span>
-            <span className="muted">ERA {p.era ?? '-'} · {p.wins}승 {p.innings}이닝</span>
+          <div key={p.playerName} className="list-row">
+            <span className="list-row-title">{p.playerName}</span>
+            <span className="list-row-trail">ERA {p.era ?? '-'} · {p.wins}승 {p.innings}이닝</span>
           </div>
         ))}
       </section>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import TeamBadge from '../components/TeamBadge'
+import Avatar from '../components/Avatar'
 import { TEAMS } from '../lib/teams'
 import { applyTeamAccent } from '../lib/teams'
 import { saveFavoriteTeam } from '../lib/store'
@@ -13,9 +14,11 @@ export default function ProfilePage({ user, favoriteTeam, onSignOut, onTeamChang
   return (
     <div>
       <section className="card">
-        <h2>내 정보</h2>
-        <p><strong>{display.displayName}</strong></p>
-        <p className="muted">{user.email}</p>
+        <div className="profile-hero">
+          <Avatar name={display.displayName} url={display.avatarUrl} size={72} />
+          <h2>{display.displayName}</h2>
+          <p className="muted" style={{ margin: 0 }}>{user.email}</p>
+        </div>
       </section>
       <section className="card">
         <h2>응원 구단 변경</h2>
@@ -44,11 +47,12 @@ export default function ProfilePage({ user, favoriteTeam, onSignOut, onTeamChang
         </div>
       </section>
       <section className="card">
-        <Link to="/privacy">개인정보 처리방침</Link>
-        <div style={{ height: 12 }} />
-        <button type="button" className="btn ghost" onClick={onSignOut} style={{ width: '100%' }}>
-          로그아웃
-        </button>
+        <div className="stack">
+          <Link to="/privacy">개인정보 처리방침</Link>
+          <button type="button" className="btn ghost" onClick={onSignOut}>
+            로그아웃
+          </button>
+        </div>
       </section>
     </div>
   )

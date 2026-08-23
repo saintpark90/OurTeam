@@ -1,5 +1,10 @@
 const THEME_STORAGE_KEY = 'ourteam-theme'
 
+const setThemeColor = (theme) => {
+  const meta = document.querySelector('meta[name="theme-color"]')
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#002991' : '#ffffff')
+}
+
 export const getStoredTheme = () => {
   try {
     const stored = localStorage.getItem(THEME_STORAGE_KEY)
@@ -7,12 +12,13 @@ export const getStoredTheme = () => {
   } catch {
     /* ignore */
   }
-  return 'dark'
+  return 'light'
 }
 
 export const applyTheme = (theme) => {
   const next = theme === 'light' ? 'light' : 'dark'
   document.documentElement.dataset.theme = next
+  setThemeColor(next)
   try {
     localStorage.setItem(THEME_STORAGE_KEY, next)
   } catch {
