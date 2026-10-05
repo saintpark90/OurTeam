@@ -1,3 +1,5 @@
+# 자동 실행 중지. 이 파일은 .github/workflows 밖에 있어서 GitHub Actions가 실행하지 않습니다.
+# 다시 켜려면 .github/workflows/deploy-pages.yml 로 되돌리세요.
 name: Deploy GitHub Pages
 
 on:

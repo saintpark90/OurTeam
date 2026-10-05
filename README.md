@@ -6,7 +6,7 @@
 
 - React (Vite) + Capacitor Android
 - Supabase (Auth: Kakao, Postgres)
-- Python 배치: KST 04:00 (`cron: 0 19 * * *` UTC) 하루 1회
+- Python 배치: 수동 실행. GitHub 새벽 자동 적재는 중지함
 
 ## 로컬 웹
 
@@ -22,7 +22,7 @@ Supabase 키가 없어도 **로컬 체험 모드**로 UI를 확인할 수 있습
 
 주소: https://saintpark90.github.io/OurTeam/
 
-`main`에 푸시하면 Actions가 빌드 후 Pages에 배포합니다.
+`main` 푸시 시 자동 배포는 중지했습니다. 이미 올라간 Pages 사이트는 그대로 남아 있습니다.
 
 Kakao 로그인을 쓰려면 Actions secrets에 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`를 넣고, Supabase Redirect URL에 `https://saintpark90.github.io/OurTeam/**` 를 추가하세요. 키가 없어도 로컬 체험 모드로 확인할 수 있습니다.
 
@@ -48,7 +48,7 @@ set TARGET_SEASON=2026
 python ingest_kbo.py
 ```
 
-GitHub Actions secrets: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`.
+GitHub Actions 자동 적재는 중지했습니다. 다시 켤 때 secrets: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`.
 
 ## 안드로이드
 
